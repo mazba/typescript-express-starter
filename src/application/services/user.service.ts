@@ -1,7 +1,7 @@
-import { injectable } from 'tsyringe';
-import { UserRepository } from '../repositories/user.repository';
-import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
-import { IUser } from '../../../models/user.model';
+import { injectable } from "tsyringe";
+import { UserRepository } from "../../infrastructure/repositories/user.repository";
+import { CreateUserDto, UpdateUserDto } from "../dtos/user.dto";
+import { IUser } from "../../../domain/entities/user.model";
 
 @injectable()
 export class UserService {

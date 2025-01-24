@@ -9,7 +9,7 @@ import { I18nService } from './infrastructure/i18n/i18n.service';
 // import { errorHandler } from './infrastructure/middleware/error.middleware';
 // import { notFoundHandler } from './infrastructure/middleware/notFound.middleware';
 // import { requestLogger } from './infrastructure/middleware/request-logger.middleware';
-import { apiV1Router } from './api/v1/routes';
+import { apiV1Router } from './presentation/routes';
 
 @injectable()
 export class App {

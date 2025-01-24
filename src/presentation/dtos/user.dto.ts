@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { Expose } from 'class-transformer';
-import { BaseDto } from '../../../shared/dtos/base.dto';
+import { BaseDto } from '../../shared/dtos/base.dto';
 
 export class CreateUserDto extends BaseDto<CreateUserDto> {
   @Expose()
