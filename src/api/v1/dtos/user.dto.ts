@@ -1,22 +1,52 @@
-import { IsString, IsEmail, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { Expose } from 'class-transformer';
-export class CreateUserDto {
-    @IsString()
-    @MinLength(2)
-    @Expose()
-    firstName: string;
-  
-    @IsString()
-    @MinLength(2)
-    @Expose()
-    lastName: string;
-  
-    @IsEmail()
-    @Expose()
-    email: string;
-  
-    @IsString()
-    @MinLength(8)
-    @Expose()
-    password: string;
+import { BaseDto } from '../../../shared/dtos/base.dto';
+
+export class CreateUserDto extends BaseDto<CreateUserDto> {
+  @Expose()
+  @IsString()
+  @IsNotEmpty()
+  name!: string;
+
+  @Expose()
+  @IsEmail()
+  email!: string;
+
+  // Sensitive field excluded from response
+  @IsString()
+  password!: string;
+
+  /**
+   * Apply additional transformations if necessary.
+   */
+  protected transform(): Record<string, unknown> {
+    return { id: this.id, name: this.name, email: this.email };
   }
+}
+
+export class UpdateUserDto extends BaseDto<CreateUserDto> {
+  @Expose()
+  @IsString()
+  @IsNotEmpty()
+  id!: string;
+
+  @Expose()
+  @IsString()
+  @IsNotEmpty()
+  name!: string;
+
+  @Expose()
+  @IsEmail()
+  email!: string;
+
+  // Sensitive field excluded from response
+  @IsString()
+  password!: string;
+
+  /**
+   * Apply additional transformations if necessary.
+   */
+  protected transform(): Record<string, unknown> {
+    return { id: this.id, name: this.name, email: this.email };
+  }
+}

@@ -12,8 +12,8 @@ export class UserController {
     res.status(201).json(user);
   }
 
-  async getUserById(req: Request, res: Response): Promise<void> {
-    const user = await this.userService.findById(req.params.id);
-    res.json(user);
-  }
+  // async getUserById(req: Request, res: Response): Promise<void> {
+  //   const user = await this.userService.findById(req.params.id);
+  //   res.json(user);
+  // }
 }

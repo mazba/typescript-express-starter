@@ -2,7 +2,7 @@ import { Router } from 'express';
 // import { authRouter } from './auth.routes';
 import { userRouter } from './user.routes';
 
-export const v1Router = Router(); //TODO:: router need to export after the use
+export const apiV1Router = Router(); //TODO:: router need to export after the use
 
-// v1Router.use('/auth', authRouter);
-v1Router.use('/users', userRouter);
+// apiV1Router.use('/auth', authRouter);
+apiV1Router.use('/users', userRouter);

@@ -24,4 +24,14 @@ export class MongoDBConnection {
       process.exit(1);
     }
   }
+
+  async disconnect(): Promise<void> {
+    try {
+      await mongoose.connection.close();
+      this.logger.info('MongoDB disconnected successfully');
+    } catch (error) {
+      this.logger.error('Error disconnecting from MongoDB:', error);
+      throw error;
+    }
+  }
 }

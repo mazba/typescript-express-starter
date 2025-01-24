@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import { Schema, model, Document } from 'mongoose';
-export interface IUserModel {
+export interface IUser {
   firstName: string;
   lastName: string;
   email: string;
@@ -8,7 +8,7 @@ export interface IUserModel {
   createdAt?: Date;
   updatedAt?: Date;
 }
-export interface UserDocument extends IUserModel,Document {
+export interface UserDocument extends IUser,Document {
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 

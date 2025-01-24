@@ -53,4 +53,14 @@ export class RedisService {
   async del(key: string): Promise<number> {
     return await this.delAsync(key);
   }
+
+  async disconnect(): Promise<void> {
+    try {
+      await promisify(this.client.quit).bind(this.client)();
+      this.logger.info('Redis disconnected successfully');
+    } catch (error) {
+      this.logger.error('Error disconnecting from Redis:', error);
+      throw error;
+    }
+  }
 }

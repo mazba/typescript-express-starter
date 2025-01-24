@@ -63,4 +63,15 @@ export class QueueService {
     }
     return queue;
   }
+
+  async disconnect(): Promise<void> {
+    try {
+      const closePromises = Array.from(this.queues.values()).map(queue => queue.close());
+      await Promise.all(closePromises);
+      this.logger.info('All queues disconnected successfully');
+    } catch (error) {
+      this.logger.error('Error disconnecting queues:', error);
+      throw error;
+    }
+  }
 }
