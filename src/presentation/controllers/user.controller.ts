@@ -1,19 +1,19 @@
 import { Request, Response } from 'express';
-import { injectable } from 'tsyringe';
+import { CreateUserDto } from '../dtos/user/create-user.dto';
 import { UserService } from '../../application/services/user.service';
-import { CreateUserDto } from '../dtos/user.dto';
+import { inject, injectable } from 'tsyringe';
+
 @injectable()
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(@inject('UserService') private userService: UserService) {}
 
-  async createUser(req: Request, res: Response): Promise<void> {
-    const dto = req.body as CreateUserDto;
-    const user = await this.userService.createUser(dto);
-    res.status(201).json(user);
+  async createUser(req: Request, res: Response) {
+    const userData: CreateUserDto = req.body;
+    try {
+      const user = await this.userService.createUser(userData);
+      res.status(201).json(user);
+    } catch (error:any) {
+      res.status(error.statusCode || 500).json({ error: error.message });
+    }
   }
-
-  // async getUserById(req: Request, res: Response): Promise<void> {
-  //   const user = await this.userService.findById(req.params.id);
-  //   res.json(user);
-  // }
 }

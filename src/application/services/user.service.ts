@@ -1,17 +1,13 @@
-import { injectable } from "tsyringe";
-import { UserRepository } from "../../infrastructure/repositories/user.repository";
-import { CreateUserDto, UpdateUserDto } from "../dtos/user.dto";
-import { IUser } from "../../../domain/entities/user.model";
+import { inject, injectable } from 'tsyringe';
+import { CreateUserUseCase } from '../use-cases/user/create-user.use-case';
 
 @injectable()
 export class UserService {
-  constructor(private userRepository: UserRepository) {}
+  constructor(
+    @inject('CreateUserUseCase') private createUserUseCase: CreateUserUseCase
+  ) {}
 
-  async createUser(data: CreateUserDto): Promise<IUser> {
-    return await this.userRepository.create(data);
+  async createUser(userData: any) {
+    return await this.createUserUseCase.execute(userData);
   }
-
-  // async findById(id: string): Promise<IUser> {
-  //   return await this.userRepository.findById(id);
-  // }
 }

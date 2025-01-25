@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { injectable } from 'tsyringe';
-import { Logger } from '../logger/logger.service';
-import { appConfig } from '../../config/app.config';
+import { Logger } from '../../logger/logger.service';
+import { appConfig } from '../../../config/app.config';
 
 @injectable()
 export class MongoDBConnection {

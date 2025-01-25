@@ -4,7 +4,7 @@ import cors from 'cors';
 import compression from 'compression';
 import { injectable, inject } from 'tsyringe';
 import { Logger } from './infrastructure/logger/logger.service';
-import { MongoDBConnection } from './infrastructure/database/mongodb.connection';
+import { MongoDBConnection } from './infrastructure/database/connections/mongodb.connection';
 import { I18nService } from './infrastructure/i18n/i18n.service';
 // import { errorHandler } from './infrastructure/middleware/error.middleware';
 // import { notFoundHandler } from './infrastructure/middleware/notFound.middleware';

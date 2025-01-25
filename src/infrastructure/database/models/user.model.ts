@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt';
 import { Schema, model, Document } from 'mongoose';
 export interface IUser {
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
+  mobile: string;
   password: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -14,14 +14,14 @@ export interface UserDocument extends IUser,Document {
 
 const UserSchema = new Schema<UserDocument>(
   {
-    firstName: {
+    name: {
       type: String,
       required: true,
       trim: true
     },
-    lastName: {
+    mobile: {
       type: String,
-      required: true,
+      unique: true,
       trim: true
     },
     email: {
@@ -67,5 +67,20 @@ UserSchema.methods.comparePassword = async function(
 ): Promise<boolean> {
   return bcrypt.compare(candidatePassword, this.password);
 };
-
+// This transform function is modifies the object by adding an "id" field that is a copy of the _id field, and removing the _id and __v fields.
+UserSchema.set('toObject', {
+  transform: function (doc, ret) {
+      ret.id = ret._id;
+      delete ret._id;
+      delete ret.__v;
+  }
+});
+// This transform function is modifies the object by adding an "id" field that is a copy of the _id field, and removing the _id and __v fields.
+UserSchema.set('toJSON', {
+  transform: function (doc, ret) {
+      ret.id = ret._id;
+      delete ret._id;
+      delete ret.__v;
+  }
+});
 export const UserModel = model<UserDocument>('User', UserSchema);
