@@ -1,15 +1,19 @@
 import mongoose from 'mongoose';
-import { injectable } from 'tsyringe';
+import { injectable, inject } from 'tsyringe';
 import { Logger } from '../../logger/logger.service';
-import { appConfig } from '../../../config/app.config';
+import config from '../../../config';
 
 @injectable()
 export class MongoDBConnection {
-  constructor(private logger: Logger) {}
+  constructor(
+    @inject('Logger') private logger: Logger
+  ) {}
 
   async connect(): Promise<void> {
     try {
-      await mongoose.connect(appConfig.db.uri);
+      await mongoose.connect(config.app.DB.MONGODB.URI, {
+        serverSelectionTimeoutMS: config.app.DB.MONGODB.SERVER_SELECTION_TIMEOUT_MS,
+      });
       this.logger.info('MongoDB connected successfully');
 
       mongoose.connection.on('error', (error) => {

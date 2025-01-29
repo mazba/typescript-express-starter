@@ -1,42 +1,41 @@
 import 'reflect-metadata';
-import { container } from 'tsyringe';
+import config from './config';
+import { DependencyRegistrar } from './shared/di/container';
 import { App } from './app';
 import { Logger } from './infrastructure/logger/logger.service';
 import { MongoDBConnection } from './infrastructure/database/connections/mongodb.connection';
-import { I18nService } from './infrastructure/i18n/i18n.service';
-import { QueueService } from './infrastructure/queue/queue.service';
-import { RedisService } from './infrastructure/cache/redis.service';
-import { appConfig } from './config/app.config';
 
-async function bootstrap() {
+const initializeApp = async () => {
   try {
-    // Register services
-    container.registerSingleton(Logger);
-    container.registerSingleton(MongoDBConnection);
-    container.registerSingleton(I18nService);
-    container.registerSingleton(QueueService);
-    container.registerSingleton(RedisService);
+    // Initialize dependencies 
+    const container = DependencyRegistrar.initialize();
+    const logger = container.resolve<Logger>('Logger');
+    const mongoDBConnection = container.resolve<MongoDBConnection>('MongoDBConnection');
 
-    const logger = container.resolve(Logger);
-    const app = container.resolve(App);
-    await app.initialize();
+    // Connect to databases and services
+    await mongoDBConnection.connect();
+    //TODO Initialize other services
 
-    const server = app.listen(appConfig.port);
+    // Create and initialize the Application
+    const app = new App();
+    app.initialize();
+
+    // Start the server
+    const server = app.app.listen(config.app.PORT, () => {
+      logger.info(`Server is running on http://localhost:${config.app.PORT}`);
+    });
 
     // Handle graceful shutdown
     const signals = ['SIGTERM', 'SIGINT'];
     signals.forEach(signal => {
       process.on(signal, async () => {
-        logger.info(`Received ${signal}, starting graceful shutdown...`);
+        logger.warn(`Received ${signal}, starting graceful shutdown...`);
         
         server.close(async () => {
           try {
             // Cleanup resources
             await container.resolve(MongoDBConnection).disconnect();
-            await container.resolve(RedisService).disconnect();
-            await container.resolve(QueueService).disconnect();
-            
-            logger.info('Graceful shutdown completed');
+            logger.warn('Graceful shutdown completed');
             process.exit(0);
           } catch (error) {
             logger.error('Error during graceful shutdown:', error);
@@ -45,17 +44,12 @@ async function bootstrap() {
         });
       });
     });
-
-    logger.info(`Server started on port ${appConfig.port}`);
-  } catch (error) {
-    const logger = container.resolve(Logger);
-    logger.error('Application failed to start:', error);
+  } catch (error: any) {
+    console.error(`Failed to start server: ${error.message}`);
+    console.error(error);
     process.exit(1);
   }
-}
+};
 
-bootstrap().catch((error) => {
-  const logger = container.resolve(Logger);
-  logger.error('Application failed to start:', error);
-  process.exit(1);
-});
+// Starting the application
+initializeApp();
